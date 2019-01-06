@@ -37,6 +37,8 @@ You're reading it!
 ### Exercise 1, 2 and 3 pipeline implemented
 #### 1. Complete Exercise 1 steps. Pipeline for filtering and RANSAC plane fitting implemented.
 
+We use an RGBD camera to obtain the data from the scene. The camera picks up the color and the depth of the objects in it's view, but often there is significant noise in the environment and therefore requires some sort of filtering to better capture the view.
+
 #### 2. Complete Exercise 2 steps: Pipeline including clustering for segmentation implemented.  
 
 #### 2. Complete Exercise 3 Steps.  Features extracted and SVM trained.  Object recognition implemented.
