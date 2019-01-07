@@ -37,17 +37,25 @@ You're reading it!
 ### Exercise 1, 2 and 3 pipeline implemented
 #### 1. Complete Exercise 1 steps. Pipeline for filtering and RANSAC plane fitting implemented.
 
-The PR2 Robot uses an RGBD camera to obtain the scene data. The camera picks up the color and the depth of the objects in it's view, and this is represented by a point cloud. Often times, there is a lot of excess information in the point cloud that can interfere with achieving our end goal, to locate the objects on the table and find their position. Excess information includes other objects in the scene and noise. Luckily, there are several filtering techniques we can use to find exactly what we're looking for. Here's a list of filters I made and used in this project:
+The PR2 Robot uses an RGBD camera to obtain the scene data. The camera picks up the color and the depth of the objects in it's view, and this is represented by a point cloud. Often times, there is a lot of excess information in the point cloud that can interfere with achieving our end goal, to locate the objects on the table and find their position. Excess information includes other objects in the scene and noise. Luckily, there are several filtering techniques we can use to find exactly what we're looking for. Here's a list of filters and description I made and used in this project:
 
-1. Voxel Grid Filter
+1. **Voxel Downsampling Filter**: RGB-D cameras often output very dense point clouds, and usually it's advantageous to downsample the data. Using a volume element (voxel) downsampling filter, we can create cells of a certain size (leaf size) and average the RGB-D values of all the Points in a particular cell can be averaged and output as one single point with RGB-D values. I chose the grid to be [0.003 m x 0.003 mx 0.003 m] (leaf = 0.003). The `pcl` library has a built in function `make_voxel_grid_filter()` to perform voxel downsampling:
 
-2. Pass Through Filter
+```sh
+    vox = cloud.make_voxel_grid_filter()
+    LEAF_SIZE = 0.003
+    vox.set_leaf_size(LEAF_SIZE, LEAF_SIZE, LEAF_SIZE)
+    cloud_filtered = vox.filter()
+
+```
+
+2. **Pass Through Filter**: The pass through filter is essentially a method to crop the region of interest. We can figure out the dimensions of the table and along what axes it sits, and then we can crop out the rest of the image. This allows us to focus on just the table, as this is our region of interest. For this project, I implemented two separate pass through filters, one along the y-axis and one along the z-axis. We have to set a range along the axes for which points we want to include.
 
 3. RANSAC Filter
 
 4. Outlier Removal Filter
 
-**Voxel Filter**: 
+
 
 #### 2. Complete Exercise 2 steps: Pipeline including clustering for segmentation implemented.  
 
