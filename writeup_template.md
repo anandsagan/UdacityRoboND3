@@ -224,7 +224,7 @@ Running `capture_features.py` outputs un-normalized and normalized matrices, as 
 
 The accuracy of my SVM model is 100%, and this is likely because I scanned each object 15 times.
 
-[histogram]
+![alt text][img2]
 
 Here's how I implemented object recognition into my project:
 
@@ -272,11 +272,11 @@ We can publish the object labels of the object in RVIZ:
 In order to successfully complete this project, `project_template.py` should successfully identify all the objects in each world and pick and place them into their respective containers. My code was able to successfully identify all the objects, 100% in each world, but had trouble picking and placing the objects in the containers. Sometimes the objects would fly off, other times the hand wasn't able to grasp it. The object recognition part is the most crucial for this project and was successfully completed.
 
 World 1:
-
+![alt text][img3]
 World 2:
-
+![alt text][img4]
 World 3:
-
+![alt text][img5]
 
 And here's another image! 
 ![demo-2](https://user-images.githubusercontent.com/20687560/28748286-9f65680e-7468-11e7-83dc-f1a32380b89c.png)
