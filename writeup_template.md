@@ -4,6 +4,7 @@
 ---
 
 
+
 # Required Steps for a Passing Submission:
 1. Extract features and train an SVM model on new objects (see `pick_list_*.yaml` in `/pr2_robot/config/` for the list of models you'll be trying to identify). 
 2. Write a ROS node and subscribe to `/pr2/world/points` topic. This topic contains noisy point cloud data that you must work with.
@@ -30,6 +31,11 @@
 ---
 ### Writeup / README
 
+[img1]: ./pics/conf_matrix.png
+[img2]: ./pics/norm_conf_matrix.png
+[img3]: ./pics/2019-01-06-224754_1920x984_scrot.png
+[img4]: ./pics/2019-01-06-225858_1920x984_scrot.png
+[img5]: ./pics/2019-01-06-230603_1920x984_scrot.png
 ### Exercise 1, 2 and 3 pipeline implemented
 #### 1. Complete Exercise 1 steps. Pipeline for filtering and RANSAC plane fitting implemented.
 
@@ -242,7 +248,7 @@ Here's how I implemented object recognition into my project:
 
 ```
 
-We can publish the labels of the object in RVIZ:
+We can publish the object labels of the object in RVIZ:
 
 ```sh
 	label_pos = list(white_cloud[pts_list[0]])
@@ -262,6 +268,15 @@ We can publish the labels of the object in RVIZ:
 ### Pick and Place Setup
 
 #### 1. For all three tabletop setups (`test*.world`), perform object recognition, then read in respective pick list (`pick_list_*.yaml`). Next construct the messages that would comprise a valid `PickPlace` request output them to `.yaml` format.
+
+In order to successfully complete this project, `project_template.py` should successfully identify all the objects in each world and pick and place them into their respective containers. My code was able to successfully identify all the objects, 100% in each world, but had trouble picking and placing the objects in the containers. Sometimes the objects would fly off, other times the hand wasn't able to grasp it. The object recognition part is the most crucial for this project and was successfully completed.
+
+World 1:
+
+World 2:
+
+World 3:
+
 
 And here's another image! 
 ![demo-2](https://user-images.githubusercontent.com/20687560/28748286-9f65680e-7468-11e7-83dc-f1a32380b89c.png)
