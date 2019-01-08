@@ -42,18 +42,64 @@ The PR2 Robot uses an RGBD camera to obtain the scene data. The camera picks up 
 1. **Voxel Downsampling Filter**: RGB-D cameras often output very dense point clouds, and usually it's advantageous to downsample the data. Using a volume element (voxel) downsampling filter, we can create cells of a certain size (leaf size) and average the RGB-D values of all the Points in a particular cell can be averaged and output as one single point with RGB-D values. I chose the grid to be [0.003 m x 0.003 mx 0.003 m] (leaf = 0.003). The `pcl` library has a built in function `make_voxel_grid_filter()` to perform voxel downsampling:
 
 ```sh
-    vox = cloud.make_voxel_grid_filter()
+    vox = cloud.make_voxel_grid_filter() #cloud is raw pcl
     LEAF_SIZE = 0.003
     vox.set_leaf_size(LEAF_SIZE, LEAF_SIZE, LEAF_SIZE)
-    cloud_filtered = vox.filter()
+    cloud_filtered = vox.filter() #filtered pcl
 
 ```
 
 2. **Pass Through Filter**: The pass through filter is essentially a method to crop the region of interest. We can figure out the dimensions of the table and along what axes it sits, and then we can crop out the rest of the image. This allows us to focus on just the table, as this is our region of interest. For this project, I implemented two separate pass through filters, one along the y-axis and one along the z-axis. We have to set a range along the axes for which points we want to include.
 
-3. RANSAC Filter
+```sh
+  #Passthrough filter along z-axis
+    passThroughZ = cloud_filtered.make_passthrough_filter()
+    filter_axis = 'z'
+    passThroughZ.set_filter_field_name(filter_axis)
+    axis_min = 0.6
+    axis_max = 1.1
+    passThroughZ.set_filter_limits(axis_min, axis_max)
+    cloud_filtered = passThroughZ.filter()
 
-4. Outlier Removal Filter
+  #Passthrough filter along y-axis
+    passThroughY = cloud_filtered.make_passthrough_filter()
+    # Assign axis and range to the passthrough filter object.
+    filter_axis = 'y'
+    passThroughY.set_filter_field_name(filter_axis)
+    axis_min = -0.5
+    axis_max = 0.5
+    passThroughY.set_filter_limits(axis_min, axis_max)
+    cloud_filtered = passThroughY.filter()
+```
+3. **RANSAC Filter**: Random Sample Consensus (RANSAC) is an algorithm used to identify points in the dataset that belong in a particular model. In this particular case, I model the table top as a plane, and filter it out of the latest `cloud_filtered` point cloud. After applying the previous two filters, the latest point cloud should contain only the tabletop and the objects on it. Therefore, by applying this RANSAC filter, we can determine the points that don't fall into the filter criteria are the objects. Here's the code of how I implemented the RANSAC filter:
+
+```sh
+    seg = cloud_filtered.make_segmenter() #Create segmentation object
+    seg.set_model_type(pcl.SACMODEL_PLANE) #Model it to a plane
+    seg.set_method_type(pcl.SAC_RANSAC)
+
+    max_distance = 0.01	#max distance for point to fit criteria
+    seg.set_distance_threshold(max_distance)
+
+    inliers, coefficients = seg.segment()  #call segment function
+
+    pcl_table_cloud = cloud_filtered.extract(inliers, negative=False) #inliers - table cloud
+    pcl_object_cloud = cloud_filtered.extract(inliers, negative=True) #outliers - object cloud
+```
+
+4. **Outlier Removal Filter**: Now that we have separated the objects from the table, we can apply one last filter to reduce the noise in the point cloud and increase the clustering time and accuracy. We assume a Gaussian distribution when determining which points should be excluded. Here's my implementation of the outlier removal filter: 
+
+```sh
+outlier_filter = cloud_filtered.make_statistical_outlier_filter()
+
+    outlier_filter.set_mean_k(50)
+    x = 1.0
+
+    # Any point with a mean distance larger than mean distance+x*std_dev will be considered outlier
+    outlier_filter.set_std_dev_mul_thresh(x)
+    cloud_filtered = outlier_filter.filter()
+
+```
 
 
 
