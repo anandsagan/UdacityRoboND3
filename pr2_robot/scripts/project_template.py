@@ -252,7 +252,7 @@ def pr2_mover(object_list):
     place_pose = Pose()
     arm_name = String()
     yaml_dict_list = []
-    test_scene_num.data = 3
+    test_scene_num.data = 2
     
     dropbox_pose = []
     dropbox_name = []
