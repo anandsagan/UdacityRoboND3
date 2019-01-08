@@ -196,6 +196,10 @@ Running `capture_features.py` outputs un-normalized and normalized matrices, as 
 
 The accuracy of my SVM model is 100%, and this is likely because I scanned each object 15 times.
 
+**Confusion Matrix**
+![alt text][img1]
+
+**Normalized Confusion Matrix**
 ![alt text][img2]
 
 Here's how I implemented object recognition into my project:
