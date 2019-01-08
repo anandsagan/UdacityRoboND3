@@ -1,15 +1,15 @@
 ## Project: Perception Pick & Place
 ### Author: Anand Kannan
 ---
-### Writeup / README
+### Writeup
 
 [img1]: ./pics/conf_matrix.png
 [img2]: ./pics/norm_conf_matrix.png
 [img3]: ./pics/2019-01-06-224754_1920x984_scrot.png
 [img4]: ./pics/2019-01-06-225858_1920x984_scrot.png
 [img5]: ./pics/2019-01-06-230603_1920x984_scrot.png
-### Exercise 1, 2 and 3 pipeline implemented
-#### 1. Complete Exercise 1 steps. Pipeline for filtering and RANSAC plane fitting implemented.
+
+#### 1. Pipeline for filtering and RANSAC plane fitting implemented
 
 The PR2 Robot uses an RGB-D camera to obtain the scene data. The camera picks up the color and the depth of the objects in it's view, and this is represented by a point cloud. In order to complete this project, we need to filter, cluster, and identify the objects in the scene. These processes are included in the `pcl_callback()` function. 
 
@@ -76,7 +76,7 @@ Often times the point cloud contains a lot of excess information in the point cl
 
 ```
 
-#### 2. Complete Exercise 2 steps: Pipeline including clustering for segmentation implemented.  
+#### 2. Pipeline including clustering for segmentation implemented 
 
 Now that we have filtered the original point cloud to just the objects, we can cluster separate objects by looking for spots with a high density of points. This is called clustering and there are several clustering algorithms and methods. I implement the Euclidean clustering technique as there are built in functions in the `pcl` library. First, we create a k-d tree from the object-cloud. This k-d tree helps us cluster the points based on the distance to neighbors and helps us create an accurate representation of the individual objects. This algorithm uses only the distance between points and not color, therefore the input is simply the XYZ cloud. We can set the cluster tolerance and minimum and maximum cluster sizes to help the function determine the clusters. Here's my implementation of clustering for segmentation:
 
@@ -112,7 +112,7 @@ Now, we can color each of these clusters to help us visualize it in RVIZ.
 
 Now we have filtered and clustered all the objects in the scene. Next, we need to implement our object recognition techniques into the `pcl_callback()` function to identify the separate objects.
 
-#### 2. Complete Exercise 3 Steps.  Features extracted and SVM trained.  Object recognition implemented.
+#### 3. Features extracted and SVM trained.  Object recognition implemented
 Before we get to identifying the objects in the scene, we need to train a support vector machine (SVM) to identify all the objects in the scenes. We can do this by creating histograms of the colors and surface normals for each object in various orientations. We can build color and surface normal histograms in the training environment provided in Exercise 3. I changed the launch file to open objects used in the project. Each object will have a unique histogram and we can feed this data into the SVM to help identify objects in our RVIZ environment.
 
 1. **Color**: To train the SVM to determine the color of each object. The code below is found in the `features.py` in the sensor_stick package. I implemented my color histograms to use the HSV color space, and we can do this simply by running our RGB points through the `rgb_to_hsv` function also in `features.py`. HSV makes it easier to identify the colors through all brightness levels. Once we have the color histogram, we can normalize it so it can be used to be compared to different sets of data.
@@ -236,8 +236,6 @@ We can publish the object labels of the object in RVIZ:
 ```
 
 ### Pick and Place Setup
-
-#### 1. For all three tabletop setups (`test*.world`), perform object recognition, then read in respective pick list (`pick_list_*.yaml`). Next construct the messages that would comprise a valid `PickPlace` request output them to `.yaml` format.
 
 In order to successfully complete this project, `project_template.py` should successfully identify all the objects in each world and pick and place them into their respective containers. My code was able to successfully identify all the objects, 100% in each world, but had trouble picking and placing the objects sometimes. The objects would fly off sometimes, other times the hand wasn't able to grasp it completely. However, my code does output the position of the objects, and the arm does make an attempt to grasp it and drop it off. For future, I need to better implement the pick and place mechanism to get the arm to successfully drop off all the objects. The output files `output_*.yaml` show the position calculated by my code for each object in the scene. Here are some pictures of my `project_template.py` code functioning in the three environments.
 
